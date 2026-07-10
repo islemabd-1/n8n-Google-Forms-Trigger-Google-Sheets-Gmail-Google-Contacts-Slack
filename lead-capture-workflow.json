@@ -19,17 +19,13 @@
       "position": [-96, -32],
       "id": "ac79ec3f-91df-4fea-bada-b9cd9833f1c9",
       "name": "On form submission",
-      "webhookId": "b9c6e635-0fc2-495a-836d-40ea8cdd2d38"
+      "webhookId": "YOUR_SHEET_ID_HERE"
     },
     {
       "parameters": {
         "operation": "append",
         "documentId": {
-          "__rl": true,
-          "value": "131YJieqVzOzmzn4dV5FNt62Fjh5RzY083v5usv0YFBs",
-          "mode": "list",
-          "cachedResultName": "Lead ",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/131YJieqVzOzmzn4dV5FNt62Fjh5RzY083v5usv0YFBs/edit?usp=drivesdk"
+        YOUR_SHEET_ID_HERE
         },
         "sheetName": {
           "__rl": true,
@@ -75,7 +71,7 @@
       "position": [368, -32],
       "id": "f1141fd7-f7cc-4ba2-9e62-981e88fb6493",
       "name": "Send a message",
-      "webhookId": "8822c3eb-192c-4ce1-bb40-13fd102b4d3f"
+      "webhookId": "YOUR_SHEET_ID_HERE"
     },
     {
       "parameters": {
@@ -105,10 +101,7 @@
         "authentication": "oAuth2",
         "select": "channel",
         "channelId": {
-          "__rl": true,
-          "value": "C0BGHMMN94J",
-          "mode": "list",
-          "cachedResultName": "n8n"
+          YOUR_SHEET_ID_HERE
         },
         "text": "=We have a new request from {{ $('Append row in sheet').item.json['Full name'] }} , \n\n\nPlease work on this and if you needed wontact the user on   :  {{ $('Append row in sheet').item.json.Email }} or {{ $('Append row in sheet').item.json.Number }}\n\nThanks , ",
         "otherOptions": {}
