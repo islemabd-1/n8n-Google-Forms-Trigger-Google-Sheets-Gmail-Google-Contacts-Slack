@@ -1,0 +1,131 @@
+{
+  "name": "Lead Capture — Forms + Sheets + Gmail + Slack + Contacts",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Contact us ",
+        "formDescription": "contact for any inquiries ",
+        "formFields": {
+          "values": [
+            {"fieldLabel": "Full name"},
+            {"fieldLabel": "number", "fieldType": "number", "placeholder": "only +213"},
+            {"fieldLabel": "Email", "fieldType": "email"}
+          ]
+        },
+        "options": {"appendAttribution": false}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [-96, -32],
+      "id": "ac79ec3f-91df-4fea-bada-b9cd9833f1c9",
+      "name": "On form submission",
+      "webhookId": "b9c6e635-0fc2-495a-836d-40ea8cdd2d38"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "131YJieqVzOzmzn4dV5FNt62Fjh5RzY083v5usv0YFBs",
+          "mode": "list",
+          "cachedResultName": "Lead ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/131YJieqVzOzmzn4dV5FNt62Fjh5RzY083v5usv0YFBs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Form",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/131YJieqVzOzmzn4dV5FNt62Fjh5RzY083v5usv0YFBs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Full name": "={{ $json['Full name'] }}",
+            "Number": "={{ $json.number }}",
+            "Email": "={{ $json.Email }}"
+          },
+          "matchingColumns": ["Full name"],
+          "schema": [
+            {"id": "Full name", "displayName": "Full name", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": false},
+            {"id": "Number", "displayName": "Number", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": false},
+            {"id": "Email", "displayName": "Email", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true, "removed": false}
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [144, -32],
+      "id": "fb227bcf-a7c2-41b5-9839-cdbde5968a12",
+      "name": "Append row in sheet"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Welcome !!",
+        "emailType": "text",
+        "message": "=Hello {{ $json['Full name'] }} welcome to our team !!!  \n\n\nWe have received your sub , we  will make the money worth the spending.",
+        "options": {"appendAttribution": false}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [368, -32],
+      "id": "f1141fd7-f7cc-4ba2-9e62-981e88fb6493",
+      "name": "Send a message",
+      "webhookId": "8822c3eb-192c-4ce1-bb40-13fd102b4d3f"
+    },
+    {
+      "parameters": {
+        "familyName": "={{ $('Append row in sheet').item.json['Full name'] }}",
+        "givenName": "={{ $('Append row in sheet').item.json['Full name'] }}",
+        "additionalFields": {
+          "emailsUi": {
+            "emailsValues": [
+              {"type": "other", "value": "={{ $('Append row in sheet').item.json.Email }}"}
+            ]
+          },
+          "phoneUi": {
+            "phoneValues": [
+              {"type": "mobile", "value": "={{ $('Append row in sheet').item.json.Number.toString() }}"}
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleContacts",
+      "typeVersion": 1,
+      "position": [640, -32],
+      "id": "e4b21a59-35f1-4acc-b482-a317e97da3c2",
+      "name": "Create a contact"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BGHMMN94J",
+          "mode": "list",
+          "cachedResultName": "n8n"
+        },
+        "text": "=We have a new request from {{ $('Append row in sheet').item.json['Full name'] }} , \n\n\nPlease work on this and if you needed wontact the user on   :  {{ $('Append row in sheet').item.json.Email }} or {{ $('Append row in sheet').item.json.Number }}\n\nThanks , ",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [848, -32],
+      "id": "987dd37a-2302-460b-b3ee-48ad55e0b7b8",
+      "name": "Send a message1",
+      "webhookId": "386f3135-c554-4811-b747-da3a968bf284"
+    }
+  ],
+  "connections": {
+    "On form submission": {"main": [[{"node": "Append row in sheet", "type": "main", "index": 0}]]},
+    "Append row in sheet": {"main": [[{"node": "Send a message", "type": "main", "index": 0}]]},
+    "Send a message": {"main": [[{"node": "Create a contact", "type": "main", "index": 0}]]},
+    "Create a contact": {"main": [[{"node": "Send a message1", "type": "main", "index": 0}]]},
+    "Send a message1": {"main": [[]]}
+  }
+}
